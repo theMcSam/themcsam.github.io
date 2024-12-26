@@ -1,5 +1,5 @@
 ---
-title: 
+title: etceterad
 author: McSam
 date: 2021-11-27 11:33:00 +0800
 categories: [Blogging, EchoCTF]
