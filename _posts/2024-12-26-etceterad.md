@@ -2,14 +2,8 @@
 title: Etceterad @ echoCTF
 author: McSam
 date: 2021-11-27 11:33:00 +0800
-categories: 
-- Blogging
-- echoCTF
-tags: 
-- echoCTF
-- linux
-- etcd
-- web
+categories: [Blogging, echoCTF]
+tags: [echoCTF, linux, etcd, web]
 math: true
 mermaid: true
 image:
@@ -17,6 +11,8 @@ image:
   width: 800
   height: 500
 ---
+
+## Etceterad - echoCTF
 
 ## Information Gathering And Enumeration
 Let's us first start off by firing up `nmap` to discover open ports and running services on our target. <br>
