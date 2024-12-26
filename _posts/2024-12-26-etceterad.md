@@ -1,9 +1,15 @@
 ---
-title: etceterad
+title: Etceterad @ echoCTF
 author: McSam
 date: 2021-11-27 11:33:00 +0800
-categories: [Blogging, EchoCTF]
-tags: [writeups, etcd, portfwd, python]
+categories: 
+- Blogging
+- echoCTF
+tags: 
+- echoCTF
+- linux
+- etcd
+- web
 math: true
 mermaid: true
 image:
