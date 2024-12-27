@@ -5,7 +5,7 @@ categories: [CTF, echoCTF]
 tags: [echoCTF, linux, etcd, web]
 math: true
 mermaid: true
-media_subpath: /assests/posts/2024-12-26-etceterad
+media_subpath: /assets/posts/2024-12-26-etceterad
 image:
   path: preview.png
 ---
