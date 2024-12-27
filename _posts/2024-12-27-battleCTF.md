@@ -1,6 +1,5 @@
 ---
 title: BattleCTF 2024
-author: McSam
 date: 2024-12-27 04:45:00 +0800
 categories: [CTF, battleCTF]
 tags: [writeups, jeopardy]
