@@ -1,8 +1,8 @@
 ---
 title: Etceterad @ echoCTF
 author: McSam
-date: 2021-11-27 11:33:00 +0800
-categories: [Blogging, echoCTF]
+date: 2024-12-27 08:33:00 +0800
+categories: [CTF, echoCTF]
 tags: [echoCTF, linux, etcd, web]
 math: true
 mermaid: true
