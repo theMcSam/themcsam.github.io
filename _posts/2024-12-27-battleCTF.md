@@ -35,13 +35,13 @@ This looks like some base64 data. We can use `cyberchef` to decode this.
 ![Invite .ini b64 data decoded](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_ini_b64_data_decoded.png)    
 
 From `cyberchef` i downloaded the raw binary file and run the file command on it.
-```
+```shell
 mcsam@0x32:~/Desktop/ctf/AfricaBattleCTF$ file download.gz 
 download.gz: gzip compressed data, last modified: Fri Oct  4 11:25:31 2024, max compression, original size modulo 2^32 1081
 ```
 
 I then decided to attempt unzipping the file with gunzip. After unzipping i read the contents of the file.
-```
+```shell
 mcsam@0x32:~/Desktop/ctf/AfricaBattleCTF$ gunzip download.gz 
 mcsam@0x32:~/Desktop/ctf/AfricaBattleCTF$ cat download
 b'\xac\xed\x00\x05t(\x83<?xml version="1.0" encoding="utf-8" standalone="no" ?>
@@ -57,7 +57,7 @@ b'\xac\xed\x00\x05t(\x83<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 The content of the .gz file is an XML file with some interesting fields. The `4cr_encrypt` field contains some encrypted data. I assumed that the name `4cr_encrypt` was just a wordplay of the actual enctyption scheme `rc4_encrypt`. Now that we are aware if the encyption scheme used we can attempt to decrypt it which would require a password. Luckily, we also have a password field in the XML file which is also hashed.
 
 At this point i saved the hash to a file and attempted to crack the password with John The Ripper. After a while we obtain the password.
-```
+```shell
 mcsam@0x32:~/Desktop/ctf/AfricaBattleCTF$ hashcat -m 3200 hashes ~/Downloads/rockyou.txt 
 ...
 $2a$12$ecui1lTmMWKRMR4jd44kfOkPx8leaL0tKChnNid4lNAbhr/YhPPxq:nohara
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 ```
 
 Upon executing this script i obtained the flag.
-```
+```shell
 mcsam@0x32:~/Desktop/ctf/AfricaBattleCTF/pwn/universe$ python3 read.py 
 ...
 Africa battleCTF 2024
