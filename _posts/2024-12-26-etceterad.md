@@ -6,10 +6,6 @@ categories: [Blogging, echoCTF]
 tags: [echoCTF, linux, etcd, web]
 math: true
 mermaid: true
-image:
-  src: https://user-images.githubusercontent.com/67085453/143765869-f4b70e8d-17d3-4e92-9311-e28dd167b4c9.png
-  width: 800
-  height: 400
 ---
 
 ## Etceterad - echoCTF
