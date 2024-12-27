@@ -5,6 +5,9 @@ categories: [CTF, battleCTF]
 tags: [writeups, jeopardy]
 math: true
 mermaid: true
+media_subpath: /assets/posts/2024-12-27-battleCTF
+image:
+  path: preview.png
 ---
 
 # BattleCTF 2024
