@@ -2,7 +2,7 @@
 title: BattleCTF 2024
 date: 2024-12-27 04:45:00 +0800
 categories: [CTF, battleCTF]
-tags: [writeups, jeopardy]
+tags: [writeups, jeopardy, pwn, forensics]
 math: true
 mermaid: true
 media_subpath: /assets/posts/2024-12-27-battleCTF

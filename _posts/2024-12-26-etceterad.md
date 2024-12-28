@@ -2,7 +2,7 @@
 title: Etceterad @ echoCTF
 date: 2024-12-27 08:33:00 +0800
 categories: [CTF, echoCTF]
-tags: [echoCTF, linux, etcd, web]
+tags: [echoCTF, linux, etcd, web, symlinks]
 math: true
 mermaid: true
 media_subpath: /assets/posts/2024-12-26-etceterad
