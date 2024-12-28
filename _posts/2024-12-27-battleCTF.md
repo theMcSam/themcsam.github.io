@@ -14,27 +14,27 @@ image:
 Hi there, i participated in the battleCTF2024 under the name `sigsegv`. 
 
 Here are the challenges i solved:
-![Challenges Solved](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/images/challenges_solved.png)   
+![Challenges Solved](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/images/challenges_solved.png)   
 
 ## Misc
 ### Rules
 Upon joining the discord server and nagivating to the #announcements channel we obtain the flag.
-![Rule Challenge flag](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Rules/images/rules_flag.png)  
+![Rule Challenge flag](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Rules/images/rules_flag.png)  
 Flag: `battleCTF{HereWeGo}`
 
 ### Invite Code
 This challenge was a bit tricky because many i overlooked the message in the #notification channel before the CTF began. Luckily, after sometime i discovered it.   
-![Invite Code First Image](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_code_discord.png) 
+![Invite Code First Image](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Invite%20Code/images/invite_code_discord.png) 
 
 First thing i did was to pick up the encoded data and place it into `cyberchef`.    
-![Cyber Chef Hex Data Decode](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_code_cyberchef_from_hex.png)   
+![Cyber Chef Hex Data Decode](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Invite%20Code/images/invite_code_cyberchef_from_hex.png)   
 We can see that the data provided was a hex dump and `cyberchef` decoded it successfully resulting in a contatenation of base64 string and a link. The base64 string just leads us to the Rick Roll video in YouTube and so that isn't vert relevant.
 
 The other link `https://bugpwn.com/invite.ini` leads us to a page where some data is hosted on the website.
-![Invite .ini file](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_ini_file.png)
+![Invite .ini file](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Invite%20Code/images/invite_ini_file.png)
 
 This looks like some base64 data. We can use `cyberchef` to decode this.
-![Invite .ini b64 data decoded](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_ini_b64_data_decoded.png)    
+![Invite .ini b64 data decoded](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Invite%20Code/images/invite_ini_b64_data_decoded.png)    
 
 From `cyberchef` i downloaded the raw binary file and run the file command on it.
 ```shell
@@ -66,7 +66,7 @@ $2a$12$ecui1lTmMWKRMR4jd44kfOkPx8leaL0tKChnNid4lNAbhr/YhPPxq:nohara
 ``` 
 
 Using this password and cyberchef i decrypted the data successfully to obtain the flag.
-![Invite Code Flag Image](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Invite%20Code/images/invite_code_flag.png) 
+![Invite Code Flag Image](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Invite%20Code/images/invite_code_flag.png) 
 Flag: `battleCTF{pwn2live_d7c51d9effacfe021fa0246e031c63e9116d8366875555771349d96c2cf0a60b}`
 
 ## Forensics
@@ -74,35 +74,35 @@ Flag: `battleCTF{pwn2live_d7c51d9effacfe021fa0246e031c63e9116d8366875555771349d9
 This was an interesting and very simple foresics challenge where were provided with a file having a **.ad1** (`roro.ad1`) extension. After a little googling and reading i discovered that it was an **evidence file** and the `AccessData FTK Imager` tool can be used to parse it.
 
 I quickly jumped to my windows virtual machine to download and install`AccessData FTK Imager`. After importing the evidence file `AccessData FTK Imager` asks for password.
-![FTK Imager Evidence File Import](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Dororo/images/FTK_imager_windows.png) 
+![FTK Imager Evidence File Import](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Dororo/images/FTK_imager_windows.png) 
 
 Immediately it hit me that the name of the challenge could be a hint to the password. I then tried the password `Dororo` and viola! i obtained the flag.
-![Doror Flag](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Dororo/images/dororo_flag.png) 
+![Doror Flag](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Dororo/images/dororo_flag.png) 
 Flag: `BattleCTF{You_d0_1t_like_4_pro_forensicator6578888}`
 
 ## Pwn
 ### Universe
 For this pwn challenge we were proivded with a ELF binary `universe`. I run `checksec` on the file to get a security overview of the file.
-![Checksec Universe](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/checksec_universe.png)  
+![Checksec Universe](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/checksec_universe.png)  
 
 This is an x64 little endian exucutable with NX and PIE enabled.
 
 Next thing was to run the binary to see it's functionality before diving into any sorts of static or dynamic analysis techniques.
-![Running Universe](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/running_universe.png)
+![Running Universe](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/running_universe.png)
 
 After this, i opened it up in `Ghidra` to view the decompilation and better understand how the `universe` executable was working.
 As always, i analyse the main function first since it is the entry point to every application.
-![Ghidra Universe Main Func Decompilation](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/main_function_decompilation.png) 
+![Ghidra Universe Main Func Decompilation](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/main_function_decompilation.png) 
 
 We can see from the image on line 20 that the pointer **pcVar1** is dereferenced and and it's content is executed. We also observe on line 10 that **pcVar1** is a pointer to a free **0x1000** bytes of memory space. Inside the for loop on line 18 we see that data is read into **pcVar1** and the loop only breaks when the **0x1000** bytes is full. The content content of the pointer **pcVar1** is then executed.
 
 This seems very straight forward and we can immediately see that we can execute code. There's just one small problem. The function `FUN_00101208()` is called before all this. That function contains code to block certain syscalls using `seccomp`.
-![Seccomp Load](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/seccomp_load.png) 
+![Seccomp Load](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/seccomp_load.png) 
 
-![Seccomp Rule Add](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/seccomp_rule_add.png)    
+![Seccomp Rule Add](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/seccomp_rule_add.png)    
 
 After discovering this, i used `seccomp-tools` to get a dump of the rules applied.
-![Seccomp Tools Dump](https://github.com/theMcSam/battleCTF-writeups/blob/main/battleCTF2024/Universe/images/seccomp_tools_dump.png)    
+![Seccomp Tools Dump](https://raw.githubusercontent.com/theMcSam/battleCTF-writeups/main/battleCTF2024/Universe/images/seccomp_tools_dump.png)    
 
 We can see that certain `syscalls` have been blocked and as a result we would have to craft our exploit shellcode with a `syscalls` that have not been listed here. In most CTFs the goal is to obtain the flag so i started searching for alternative `syscalls` i could abuse to read files on the target and get the flag.  After some searching, i decided to go with the `openat()` `syscall` to open and read files.
 
