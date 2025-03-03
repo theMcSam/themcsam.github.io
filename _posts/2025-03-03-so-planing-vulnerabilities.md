@@ -26,7 +26,7 @@ I found **two serious vulnerabilities**:
 In this post, I’ll break down how I discovered these vulnerabilities, their impact, and what can be done to fix them. Let's dive in!
 
 
-### Arbitrary file upload leading to RCE
+## Arbitrary file upload leading to RCE
 
 So, here’s where things started getting interesting. While digging through **SO Planning v1.53.00**, I came across its **file upload functionality**. At first glance, it looked like they had some kind of security in place—certain file extensions were blocked. But, as we all know, **blacklists are like leaky buckets**—they never quite catch everything.  
 
@@ -48,4 +48,23 @@ The image below shows that it's possible to upload a malicious .phtml file to th
 ![Uploading malicious phtml file](file_upload_vuln_soplanning.png)
 *Figure 2: Uploading malicious phtml file*
 
+I successfully executed code on the target by exploiting these vulnerabilities. The image below shows the execution in action.
+![Executing code on the target](command_execution_from_uploaded_shell.png)
+
 To make things even easier, I wrote a script to automate this attack. You can check it out on my GitHub: Link to script.
+
+
+## Arbitrary file deletion
+Ever wished you could just delete files without anyone stopping you? Well, SOPlanning v1.53.00 practically hands you the keys!  
+
+The application doesn't properly validate user input before deleting files. This means an attacker can remove **any file** they want—whether it's critical system files, application data, or just something to break things for fun. The worst part? No authentication is required. This could lead to **service disruption, data loss, or even further exploitation**.  
+
+#### 🔍 What's Going Wrong?  
+The issue lies in how the application handles file deletion in `www/process/upload.php`.  
+
+Specifically, user input from `$_POST['fichier_to_delete']` is **directly concatenated** with the upload directory path (`$upload_dir`). Since this value is user-controlled, attackers can **trick the application into deleting files outside the intended directory** using **directory traversal** (`../../etc/passwd`, anyone?).  
+
+The image below highlights this flaw in action:  
+
+![Arbitrary file deletion vulnerability](file_deletion_vuln.png)  
+*Figure 3: Exploiting arbitrary file deletion via directory traversal*  
