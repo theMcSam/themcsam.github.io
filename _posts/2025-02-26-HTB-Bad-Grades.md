@@ -5,7 +5,7 @@ categories: [CTF, HackTheBox, Pwn]
 tags: [writeups, binary_exploitation, pwn]
 math: true
 mermaid: true
-media_subpath: 
+media_subpath: /assets/posts/2025-02-16-HTB-Bad-Grades
 image:
   path: preview.png
 ---
