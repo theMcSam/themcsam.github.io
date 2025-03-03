@@ -66,5 +66,5 @@ Specifically, user input from `$_POST['fichier_to_delete']` is **directly concat
 
 The image below highlights this flaw in action:  
 
-![Arbitrary file deletion vulnerability](file_deletion_vuln.png)  
+![Arbitrary file deletion vulnerability](file_deletion_code.png)  
 *Figure 3: Exploiting arbitrary file deletion via directory traversal*  
