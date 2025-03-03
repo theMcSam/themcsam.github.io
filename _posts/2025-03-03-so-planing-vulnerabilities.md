@@ -74,8 +74,14 @@ In the image below, you can see the directory contents listed, including a `.hta
 ![State of the directory before exploiting the arbitrary file deletion vuln](before_running_the_delete_request.png)
 *Figure 5: State of the directory before exploiting the arbitrary file deletion vuln*
 
-I fired up burpsuite to intercept and modify the parameter to point to the `.htaccess` file.
+In the request shown in the *Figure 6*, the linkid is intentionally left blank, as the code uses it to
+define the directory name. The attacker can later specify the deletion of the .htaccess file, which
+is crucial for web server configuration. Moreover, by exploiting directory traversal with payloads
+like `../../../../../`, an attacker can target and delete files outside the intended upload directory.
+This vulnerability could allow an attacker to remove critical files necessary for the proper
+functioning of the application, potentially leading to a denial of service (DoS).
 
 ![Manipulating the post parameter in burpsuite](arb_file_del_request.png)
 *Figure 6: Manipulating the post parameter in burpsuite*
 
+After sending in the request the file what successfully deleted from the server.
