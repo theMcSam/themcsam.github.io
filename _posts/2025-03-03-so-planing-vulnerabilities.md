@@ -1,7 +1,7 @@
 ---
 title: Vulnerabilities I Discovered in Simple Online Planning v1.53.00
 date: 2024-03-03 11:33:00 +0800
-categories: [ ]
+categories: [Vulns]
 tags: [writeups]
 math: true
 mermaid: true
