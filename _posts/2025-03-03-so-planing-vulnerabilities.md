@@ -1,6 +1,6 @@
 ---
 title: Vulnerabilities I Discovered in Simple Online Planning v1.53.00
-date: 2024-03-03 11:33:00 +0800
+date: 2025-03-03 11:33:00 +0800
 categories: [Vulns]
 tags: [writeups]
 math: true
@@ -69,7 +69,13 @@ The issue lies in how the application handles file deletion in `www/process/uplo
 Specifically, user input from `$_POST['fichier_to_delete']` is **directly concatenated** with the upload directory path (`$upload_dir`). Since this value is user-controlled, attackers can **trick the application into deleting files outside the intended directory** using **directory traversal** (`../../etc/passwd`, anyone?).  
 
 ### Proof Of Concept
-You can see in the photo below that the contents of the directory have been listed and there's a `.htacess` file present.
+In the image below, you can see the directory contents listed, including a `.htaccess` file. This shows the directory state before exploiting the vulnerability.
 
 ![State of the directory before exploiting the arbitrary file deletion vuln](before_running_the_delete_request.png)
 *Figure 5: State of the directory before exploiting the arbitrary file deletion vuln*
+
+I fired up burpsuite to intercept and modify the parameter to point to the `.htaccess` file.
+
+![Manipulating the post parameter in burpsuite](arb_file_del_request.png)
+*Figure 6: Manipulating the post parameter in burpsuite*
+
