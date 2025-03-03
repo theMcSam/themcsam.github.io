@@ -55,7 +55,7 @@ I was then able to execute code on the target system, demonstrating the impact o
 ![Executing code on the target](command_execution_from_uploaded_shell.png)  
 *Figure 3: Executing code on the target*  
 
-To make things even easier, I wrote a script to automate this attack. You can check it out on my GitHub: **https://github.com/theMcSam/SO-Planning-RCE-Authenticated**.
+To make things even easier, I wrote a script to automate this attack. You can check it out on my GitHub: (https://github.com/theMcSam/SO-Planning-RCE-Authenticated)[https://github.com/theMcSam/SO-Planning-RCE-Authenticated].
 This is a script I wrote to exploit an older file upload vulnerability in SOPlanning. The same script can still be used to exploit the vulnerability by modifying the file extension to `.phtml` in the script.
 
 ---
