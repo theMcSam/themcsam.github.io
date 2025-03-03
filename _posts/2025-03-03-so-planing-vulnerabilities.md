@@ -50,6 +50,7 @@ The image below shows that it's possible to upload a malicious .phtml file to th
 
 I successfully executed code on the target by exploiting these vulnerabilities. The image below shows the execution in action.
 ![Executing code on the target](command_execution_from_uploaded_shell.png)
+*Figure 3: Executing code on the target*
 
 To make things even easier, I wrote a script to automate this attack. You can check it out on my GitHub: Link to script.
 
@@ -62,9 +63,13 @@ The application doesn't properly validate user input before deleting files. This
 #### 🔍 What's Going Wrong?  
 The issue lies in how the application handles file deletion in `www/process/upload.php`.  
 
+![Arbitrary file deletion vulnerability](file_deletion_code.png)  
+*Figure 4: Unsanitized user input is concatenated with the upload directory paths*  
+
 Specifically, user input from `$_POST['fichier_to_delete']` is **directly concatenated** with the upload directory path (`$upload_dir`). Since this value is user-controlled, attackers can **trick the application into deleting files outside the intended directory** using **directory traversal** (`../../etc/passwd`, anyone?).  
 
-The image below highlights this flaw in action:  
+### Proof Of Concept
+You can see in the photo below that the contents of the directory have been listed and there's a `.htacess` file present.
 
-![Arbitrary file deletion vulnerability](file_deletion_code.png)  
-*Figure 3: Exploiting arbitrary file deletion via directory traversal*  
+![State of the directory before exploiting the arbitrary file deletion vuln](before_running_the_delete_request.png)
+*Figure 5: State of the directory before exploiting the arbitrary file deletion vuln*
