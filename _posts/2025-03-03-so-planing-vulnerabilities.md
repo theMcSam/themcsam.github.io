@@ -1,7 +1,7 @@
 ---
 title: Vulnerabilities I Discovered in Simple Online Planning v1.53.00
 date: 2025-03-03 11:33:00 +0800
-categories: [Vulns]
+categories: [Bug Hunting]
 tags: [writeups]
 math: true
 mermaid: true
@@ -74,14 +74,30 @@ In the image below, you can see the directory contents listed, including a `.hta
 ![State of the directory before exploiting the arbitrary file deletion vuln](before_running_the_delete_request.png)
 *Figure 5: State of the directory before exploiting the arbitrary file deletion vuln*
 
-In the request shown in the *Figure 6*, the linkid is intentionally left blank, as the code uses it to
-define the directory name. The attacker can later specify the deletion of the .htaccess file, which
-is crucial for web server configuration. Moreover, by exploiting directory traversal with payloads
-like `../../../../../`, an attacker can target and delete files outside the intended upload directory.
-This vulnerability could allow an attacker to remove critical files necessary for the proper
-functioning of the application, potentially leading to a denial of service (DoS).
+In the request shown in the *Figure 6*, the `linkid` is intentionally left blank, as the code uses it to
+define the directory name. 
+```
+$linkid=preg_replace( '/[^a-z0-9]+/', '0', strtolower($_POST['linkid']));
+$upload_dir = UPLOAD_DIR."$linkid/"; // upload directory 
+if(strlen(trim($linkid)) == 0){
+	echo 'Error, please contact support';
+	die;
+}
+```
+
+An attacker can then target the `.htaccess` file for deletion, which is crucial for web server configuration. But it doesn't stop there—by using directory traversal tricks like `../../../../../` in the `fichier_to_delete` parameter, they can go beyond the upload directory and delete files elsewhere on the system.  
+
+This kind of vulnerability can be a big deal. Removing critical files could break the application, potentially leading to a denial of service (DoS).
 
 ![Manipulating the post parameter in burpsuite](arb_file_del_request.png)
 *Figure 6: Manipulating the post parameter in burpsuite*
 
-After sending in the request the file what successfully deleted from the server.
+After sending the request `.htaccess` what successfully deleted from the server.
+
+## Reporting the vulnerabilities
+After discovering and testing these vulnerabilities, I reached out to the SOPlanning team to report my findings. They responded promptly and assured me that the issues would be fixed.
+
+![SO Planning](so_planning_reply_to_email.png)
+*Figure 7: Reply from SO Planning support team*
+
+True to their word, they rolled out newer versions of the application that patched the vulnerabilities I’ve discussed here. Big shoutout to the SOPlanning team for their quick response and for taking security seriously!
