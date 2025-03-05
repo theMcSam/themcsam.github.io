@@ -1,8 +1,8 @@
 ---
 title: Vulnerabilities I Discovered in Simple Online Planning v1.53.00
 date: 2025-03-03 11:33:00 +0800
-categories: [Bug Hunting]
-tags: [writeups]
+categories: [Vulnerability Research, Bug Hunting]
+tags: [file upload bypass, arbitrary file deletion]
 math: true
 mermaid: true
 media_subpath: /assets/posts/2025-03-03-so-planing-vulnerabilities

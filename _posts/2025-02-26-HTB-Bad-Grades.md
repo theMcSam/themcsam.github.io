@@ -2,7 +2,7 @@
 title: Bad Grades @ HackTheBox Challenge
 date: 2025-02-26 04:45:00 +0800
 categories: [CTF, HackTheBox, Pwn]
-tags: [writeups, binary_exploitation, pwn]
+tags: [writeups, binary exploitation, pwn]
 math: true
 mermaid: true
 media_subpath: /assets/posts/2025-02-16-HTB-Bad-Grades
