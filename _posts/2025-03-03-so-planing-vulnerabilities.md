@@ -20,8 +20,8 @@ So, I grabbed the source code for **version 1.53.00**, rolled up my sleeves, and
 
 I found **two serious vulnerabilities**:  
 
-1. **Arbitrary File Upload** – Allows an attacker to upload malicious files, potentially leading to remote code execution.  
-2. **Arbitrary File Deletion** – Lets an attacker delete files from the server, which could lead to data loss, service disruption, or further exploitation.  
+1. **Arbitrary File Upload** **(CVE-2024-57169)** – Allows an attacker to upload malicious files, potentially leading to remote code execution.  
+2. **Arbitrary File Deletion** **(CVE-2024-57170)** – Lets an attacker delete files from the server, which could lead to data loss, service disruption, or further exploitation.  
 
 In this post, I’ll break down how I discovered these vulnerabilities, their impact, and what can be done to fix them. Let's dive in!  
 
