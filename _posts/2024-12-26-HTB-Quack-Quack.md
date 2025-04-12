@@ -129,7 +129,7 @@ And then we run the program and enter 8 * 'A's + 'Quack Quack ' (`AAAAAAAAQuack 
 We can print the contents of the stack from `rsi` and search for the stack canary.
 ![Stack Canary](stack_canary.png)
 
-After we find the stack canary we can calculate the offset from the begining of our input to the stack canary which is 120 bytes. And we know that 0x20 bytes is added to the pointer in `pcVar1 + 0x20`. As a result of this `pcVar1 + 0x20` handles part of the 120 offset. This reduces the number of character we need to enter to point to the canary to `120 - 32 = 88`. 
+After we find the stack canary we can calculate the offset from the begining of our input to the stack canary which is 120 bytes. And we know that 0x20 bytes is added to the pointer in `pcVar1 + 0x20`. As a result of this `pcVar1 + 0x20` handles part of the 120 offset. This reduces the number of characters we need to enter to point to the canary to `120 - 32 = 88`. 
 
 To be able to leak the canary we can use the payload (`'A' * 89 + 'Quack Quack '`). We add an addiontal 1 byte to include the null byte for the canary to make sure `printf` knows when to stop printing. We can use the code below to leak the stack canary.
 ```python
