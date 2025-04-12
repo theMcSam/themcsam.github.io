@@ -111,14 +111,14 @@ void duckling(void)
 }
 ```
 
-Looking at the code in the `duckling` function we can see that the `read` function is being use to take 102 bytes from standard input and placed in `local_88` which is just a 32 bytes array. From this analysis alone, we can see buffer overflow rearing its ugly head here. Another buffer overflow also can been seen in the second `read` function, for now we will only focus on the first buffer overflow .This means we can write outside the bounds on the array and write to other regions of memory to take conrol of the return address. There's one challenge though, the is a stack canary which prevents us from doing this. This canary lies right before the return address as a result if we try to overwrite the return address, the stack canary also get overwritten and the program exits.
+Looking at the code in the `duckling` function we can see that the `read` function is being use to take 102 bytes from standard input and placed in `local_88` which is just a 32 bytes array. From this analysis alone, we can see buffer overflow rearing its ugly head here. Another buffer overflow also can been seen in the second `read` function, for now we will only focus on the first buffer overflow .This means we can write outside the bounds on the array and write to other regions of memory to take conrol of the return address. There's one challenge though, there is a stack canary which prevents us from doing this. This canary lies right before the return address as a result if we try to overwrite the return address, the stack canary also get overwritten and the program exits.
 
 
 To be able to bypass this we must find a way to leak the stack canary (`local_10`). Upon further analysis we observe that the `strstr` function is being is used to check for the existence of the substring `Quack Quack ` in `local_88`. The `strstr` function basically looks for a substring in a larger string and returns a pointer to the first occurence of the substring. In this case `strstr` will return a pointer to the first `Q` of the substring `Quack Quack ` if it finds it in the larger string and it will be stored in `pcVar1`.
 
 The `if` condition checks to see if `strstr` returns a NULL value and if it doesn't a `printf` statment is executed. But we notice something here, the pointer value stored in `pcVar1` in incremented by 0x20 (32 in decimal) and dereferenced to print out the value to standard output. There is a flaw in this logic because of `pcVar1 + 0x20` can be used to access items in other regions in memory given that the attacker is able to control `pcVar1`. We can leverage this to leak the stack canary.
 
-### Understading the vulnerabilty and crafting an exploit
+### Understanding the vulnerabilty and crafting an exploit
 We need to find the stack canary offset so we can leak it using the `printf` function. To be able to do that we can use `pwndbg` to calculate this offset. We can do this by setting a break point on the first `read` function in the `duckling` function.
 ```
 b *0x0000000000401562
@@ -126,7 +126,7 @@ b *0x0000000000401562
 
 Next, we run the program and input the string `AAAAAAAAQuack Quack ` (i.e., 8 `'A'` characters followed by the expected `Quack Quack ` substring). This input helps us pass the `strstr` check in the vulnerable function.
 
-To identify the value of the stack canary, we use the `canary` command in GDB with the `pwndbg` plugin. This command reveals the current value of the canary. Once we have that, we can scan the stack to find where this value resides relative to our input.
+To identify the value of the stack canary, we use the `canary` command in GDB or `pwndbg`. This command reveals the current value of the canary. Once we have that, we can scan the stack to find where this value resides relative to our input.
 
 Since our input is passed as the **second argument** to the `read` function, it is stored in the memory address pointed to by the `rsi` register. In the x86_64 calling convention, `rsi` holds the second argument for functions.
 
