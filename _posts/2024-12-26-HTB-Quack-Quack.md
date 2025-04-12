@@ -129,20 +129,33 @@ And then we run the program and enter 8 * 'A's + 'Quack Quack ' (`AAAAAAAAQuack 
 We can print the contents of the stack from `rsi` and search for the stack canary.
 ![Stack Canary](stack_canary.png)
 
-After we find the stack canary we can calculate the offset from the begining of our input to the stack canary which is 120 bytes. And we know that 0x20 bytes is added to the pointer in `pcVar1 + 0x20`. As a result of this `pcVar1 + 0x20` handles part of the 120 offset. This reduces the number of characters we need to enter to point to the canary to `120 - 32 = 88`. 
+After identifying the stack canary on the stack, we calculate the offset from the beginning of our input to the canary. This offset turns out to be **120 bytes**. However, the code snippet `pcVar1 + 0x20` adds an extra 32 bytes to the pointer before it is dereferenced and printed using `printf`.
 
-To be able to leak the canary we can use the payload (`'A' * 89 + 'Quack Quack '`). We add an addiontal 1 byte to include the null byte for the canary to make sure `printf` knows when to stop printing. We can use the code below to leak the stack canary.
+This means we don't need to manually input the full 120 bytes to reach the canary — the addition of `0x20` (32) effectively handles part of that for us. Therefore, the number of characters we need to input to point directly to the canary becomes:
+
+```
+120 (total offset) - 32 (pcVar1 adjustment) = 88 bytes
+```
+
+To successfully leak the canary, we craft a payload of **88 'A's**, followed by one additional byte (`'A'`) to ensure proper alignment, and finally the string `'Quack Quack '` to satisfy the `strstr` check. This gives us the final payload:
+
+```
+b"A" * 89 + b"Quack Quack "
+```
+
+We also ensure the null byte (`\x00`) at the beginning of the canary is preserved during reconstruction. Here's the code snippet used to leak the stack canary:
+
 ```python
-canary_offset = 88 + 1 # +1 for null pointer
+canary_offset = 88 + 1  # +1 for alignment and null byte
 
-io.sendafter("> ", b'A'*canary_offset+b"Quack Quack ")
+io.sendafter("> ", b"A" * canary_offset + b"Quack Quack ")
 
 data_recv = io.recv()
 canary_bytes = data_recv.split(b',')[0].strip(b'Quack Quack')[:7]
-   
-canary = u64(b"\x00"+canary_bytes)
-```
 
+canary = u64(b"\x00" + canary_bytes)
+print(f"Leaked Canary: {hex(canary)}")
+```
 
 After successfully leaking the canary we exploit the second buffer overflow we discovered earlier to overwrite the contents of the stack and place the right value in the canary section. From here we overwrite the return address to point to the `duck_attack` function. Before doing that we need to find the address of the `duck_attack` function and we can do that easily using `pwndbg` or `gdb`.  
 ![Address of the duck_attack function](address_of_duck_attack_function.png)
