@@ -119,14 +119,18 @@ To be able to bypass this we must find a way to leak the stack canary (`local_10
 The `if` condition checks to see if `strstr` returns a NULL value and if it doesn't a `printf` statment is executed. But we notice something here, the pointer value stored in `pcVar1` in incremented by 0x20 (32 in decimal) and dereferenced to print out the value to standard output. There is a flaw in this logic because of `pcVar1 + 0x20` can be used to access items in other regions in memory given that the attacker is able to control `pcVar1`. We can leverage this to leak the stack canary.
 
 ### Understading the vulnerabilty and crafting an exploit
-We need to find the stack canary offset so we can leak it using the `printf` function. To be able to do that we can use `pwndbg` to calculate this offset. We can do this but setting a break point on the first `read` function in the `duckling` function.
+We need to find the stack canary offset so we can leak it using the `printf` function. To be able to do that we can use `pwndbg` to calculate this offset. We can do this by setting a break point on the first `read` function in the `duckling` function.
 ```
 b *0x0000000000401562
 ```
 
-And then we run the program and enter 8 * 'A's + 'Quack Quack ' (`AAAAAAAAQuack Quack `) . Next we will look at what exactly the value of the stack canary is and we can do this using the `canary` gdb command. This prints out the canary to us and from this we can search the stack to find the stack canary value. When we find it then we can calculate the offset to the value from `rsi`. Remember that our initial payload `AAAAAAAAQuack Quack ` is the **second argument** to the `read` function. In `x86_64` the `rsi` register is used to hold the second argument of a function.
+Next, we run the program and input the string `AAAAAAAAQuack Quack ` (i.e., 8 `'A'` characters followed by the expected `Quack Quack ` substring). This input helps us pass the `strstr` check in the vulnerable function.
 
-We can print the contents of the stack from `rsi` and search for the stack canary.
+To identify the value of the stack canary, we use the `canary` command in GDB with the `pwndbg` plugin. This command reveals the current value of the canary. Once we have that, we can scan the stack to find where this value resides relative to our input.
+
+Since our input is passed as the **second argument** to the `read` function, it is stored in the memory address pointed to by the `rsi` register. In the x86_64 calling convention, `rsi` holds the second argument for functions.
+
+We can print the contents of the stack from `rsi` and search for the stack canary.  
 ![Stack Canary](stack_canary.png)
 
 After identifying the stack canary on the stack, we calculate the offset from the beginning of our input to the canary. This offset turns out to be **120 bytes**. However, the code snippet `pcVar1 + 0x20` adds an extra 32 bytes to the pointer before it is dereferenced and printed using `printf`.
