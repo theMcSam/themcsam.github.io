@@ -32,7 +32,7 @@ Archive:  pwn_quack_quack.zip
   2482033                     6 files
 ```
 
-We can see that we have the quack_quack binary in the zip file. We quickly unzip and run some basic file checks on the binary.
+We can see that we have the `quack_quack` binary in the zip file. We quickly unzip and run some basic file checks on the binary.
 As with any binary exploitation challenge we start off by running `checksec` on our binary to see which protections have been enabled on the binary.
 ```
 mcsam@0x32:~/HTBAppocalypse/pwn/quack_quack/challenge$ checksec --file quack_quack
@@ -80,38 +80,7 @@ void duckling(void)
   long local_10;
   
   local_10 = *(long *)(in_FS_OFFSET + 0x28);
-  local_88[0] = '\0';
-  local_88[1] = '\0';
-  local_88[2] = '\0';
-  local_88[3] = '\0';
-  local_88[4] = '\0';
-  local_88[5] = '\0';
-  local_88[6] = '\0';
-  local_88[7] = '\0';
-  local_88[8] = '\0';
-  local_88[9] = '\0';
-  local_88[10] = '\0';
-  local_88[0xb] = '\0';
-  local_88[0xc] = '\0';
-  local_88[0xd] = '\0';
-  local_88[0xe] = '\0';
-  local_88[0xf] = '\0';
-  local_88[0x10] = '\0';
-  local_88[0x11] = '\0';
-  local_88[0x12] = '\0';
-  local_88[0x13] = '\0';
-  local_88[0x14] = '\0';
-  local_88[0x15] = '\0';
-  local_88[0x16] = '\0';
-  local_88[0x17] = '\0';
-  local_88[0x18] = '\0';
-  local_88[0x19] = '\0';
-  local_88[0x1a] = '\0';
-  local_88[0x1b] = '\0';
-  local_88[0x1c] = '\0';
-  local_88[0x1d] = '\0';
-  local_88[0x1e] = '\0';
-  local_88[0x1f] = '\0';
+  ...
   local_68 = 0;
   local_60 = 0;
   local_58 = 0;
