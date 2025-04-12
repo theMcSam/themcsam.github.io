@@ -7,7 +7,7 @@ math: true
 mermaid: true
 media_subpath: /assets/posts/2024-12-26-HTB-Quack-Quack
 image:
-  path: preview.jpeg
+  path: preview.jpg
 ---
 
 ## Binary Exploitation - Quack Quack
