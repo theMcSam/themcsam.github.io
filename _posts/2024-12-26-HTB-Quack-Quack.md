@@ -1,5 +1,5 @@
 ---
-title: Quack Quack @ HackTheBox Appocalypse 2025
+title: Quack Quack @ HackTheBox Apocalypse 2025
 date: 2025-04-12 11:47:00 +0800
 categories: [CTF, HackTheBox, Pwn]
 tags: [writeups, binary exploitation, pwn]
