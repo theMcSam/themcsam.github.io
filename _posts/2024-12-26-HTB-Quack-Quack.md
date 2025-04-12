@@ -51,10 +51,10 @@ mcsam@0x32:~/HTBAppocalypse/pwn/quack_quack/challenge$ checksec --file quack_qua
 PIE is not enabled on this binary, i guess this is good news for us since we can use static memory addresses hence making the challenge easier. However, there is a stack canary which might try to stop us from shifting control :joy:. Anyways you'll see how can use knowledge of the dark arts to bypass this and shift control.
 
 ### Decompiling and identifying vulnerabilties
-Now that we know the protections enabled we can go ahead to decompile it to identify possible vulnerabilties and flaws. We can spin up Ghidra and begin analysis.
+Now that we know the protections enabled we can go ahead to decompile it to identify possible vulnerabilties and flaws. We can spin up Ghidra and begin analysis.   
 ![Ghidra Intial Decompilation](ghidra_decompilation_and_functions.png)
 
-From the image we can see the decompilation of the `main` function. In the `main` function we can see that a call is made to the `duckling` function. Also in the symbol tree section we an see other functions in this binary like `duck_attack`. Let's take a quick look at the decompilation for the `duck_attack` function.
+From the image we can see the decompilation of the `main` function. In the `main` function we can see that a call is made to the `duckling` function. Also in the symbol tree section we an see other functions in this binary like `duck_attack`. Let's take a quick look at the decompilation for the `duck_attack` function. 
 
 ![duck_attack Function Decompilation](duck_attack_function_decompilation.png)
 It's quite obvious that the `ducK_attack` function reads the content on the `flag.txt` file and prints it out standard output. We have to find a way to direct execution to this function to obtain the flag for this challenge.
@@ -144,7 +144,7 @@ canary = u64(b"\x00"+canary_bytes)
 ```
 
 
-After successfully leaking the canary we exploit the second buffer overflow we discovered earlier to overwrite the contents of the stack and place the right value in the canary section. From here we overwrite the return address to point to the `duck_attack` function. Before doing that we need to find the address of the `duck_attack` function and we can do that easily using `pwndbg` or `gdb`.
+After successfully leaking the canary we exploit the second buffer overflow we discovered earlier to overwrite the contents of the stack and place the right value in the canary section. From here we overwrite the return address to point to the `duck_attack` function. Before doing that we need to find the address of the `duck_attack` function and we can do that easily using `pwndbg` or `gdb`.  
 ![Address of the duck_attack function](address_of_duck_attack_function.png)
 
 Now that we know the address of the `duck_attack` function we can craft our second payload to excuted it.
