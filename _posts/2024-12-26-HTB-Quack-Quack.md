@@ -16,7 +16,7 @@ Difficulty: Very Easy
 Overview: 
 
 ### Basic file checks
-The challenge starts off with a zip we download from the HTB website. These are the files contained in the zip file.
+The challenge begins with a zip file that we download from the HTB website. Here's a breakdown of its contents:
 ```
 mcsam@0x32:~/HTBAppocalypse/pwn/quack_quack$ unzip -l pwn_quack_quack.zip 
 Archive:  pwn_quack_quack.zip
@@ -32,8 +32,8 @@ Archive:  pwn_quack_quack.zip
   2482033                     6 files
 ```
 
-We can see that we have the `quack_quack` binary in the zip file. We quickly unzip and run some basic file checks on the binary.
-As with any binary exploitation challenge we start off by running `checksec` on our binary to see which protections have been enabled on the binary.
+Among the files, we find the binary named quack_quack. We quickly unzip and run some basic file checks on the binary.
+As with any binary exploitation challenge, we start by running `checksec` on our binary to see which security features have been enabled on the binary.
 ```
 mcsam@0x32:~/HTBAppocalypse/pwn/quack_quack/challenge$ checksec --file quack_quack
 [*] '/home/mcsam/HTBAppocalypse/pwn/quack_quack/challenge/quack_quack'
@@ -48,7 +48,7 @@ mcsam@0x32:~/HTBAppocalypse/pwn/quack_quack/challenge$ checksec --file quack_qua
     Stripped:   No
 ```
 
-PIE is not enabled on this binary, i guess this is good news for us since we can use static memory addresses hence making the challenge easier. However, there is a stack canary which might try to stop us from shifting control :joy:. Anyways you'll see how can use knowledge of the dark arts to bypass this and shift control.
+PIE (Position Independent Executable) is disabled on this binary, i guess this is good news for us since we can use static memory addresses hence making the challenge easier. However, there is a stack canary which might try to stop us from shifting control :joy:. Anyways you'll see how can use knowledge of the dark arts to bypass this and shift control.
 
 ### Decompiling and identifying vulnerabilties
 Now that we know the protections enabled we can go ahead to decompile it to identify possible vulnerabilties and flaws. We can spin up Ghidra and begin analysis.   
