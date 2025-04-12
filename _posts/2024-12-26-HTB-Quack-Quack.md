@@ -56,8 +56,8 @@ Now that we know the protections enabled we can go ahead to decompile it to iden
 
 From the image we can see the decompilation of the `main` function. In the `main` function we can see that a call is made to the `duckling` function. Also in the symbol tree section we an see other functions in this binary like `duck_attack`. Let's take a quick look at the decompilation for the `duck_attack` function. 
 
-![duck_attack Function Decompilation](duck_attack_function_decompilation.png)
-It's quite obvious that the `ducK_attack` function reads the content on the `flag.txt` file and prints it out standard output. We have to find a way to direct execution to this function to obtain the flag for this challenge.
+![duck_attack Function Decompilation](duck_attack_function_decompilation.png)   
+It's quite obvious that the `duck_attack` function reads the content on the `flag.txt` file and prints it out standard output. We have to find a way to direct execution to this function to obtain the flag for this challenge.
 
 Let's also take a look at the `ducking` function.
 ```c
