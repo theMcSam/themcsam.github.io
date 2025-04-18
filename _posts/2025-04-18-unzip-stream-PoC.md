@@ -91,7 +91,7 @@ Archive:  evil.zip
        15                     1 file
 ```
 
-## ✅ Verifying / Testing the Exploit
+## Verifying / Testing the Exploit
 
 To test this PoC, we first set up a development environment and install the vulnerable version of `unzip-stream` using:
 
