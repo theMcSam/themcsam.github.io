@@ -65,7 +65,7 @@ path_to_overwrite_file = 'home/mcsam/pocc'
 
 if not os.path.isfile(file_path):
     print(f"Error: File '{file_path}' does not exist.")
-    return
+    os.exit()
 
 with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
     zipf.write(file_path, \
