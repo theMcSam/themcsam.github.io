@@ -7,7 +7,7 @@ math: true
 mermaid: true
 media_subpath: /assets/posts/2025-06-29-gogs-RCE-PoC
 image:
-  path: preview.png
+  path: preview.jpeg
 ---
 
 # Vulnerability anaylsis and PoC Development for CVE-2024-39930
