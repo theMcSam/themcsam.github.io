@@ -11,6 +11,8 @@ image:
 ---
 
 # Vulnerability anaylsis and PoC Development for CVE-2024-39930
+
+## Introduction
 **Gogs** is a lightweight and self-hosted Git service that's simple to set up and ideal for organizations that prefer to keep their source code off third-party platforms like GitHub. While Gogs offers many of the same features as GitHub, its self-hosted nature makes it particularly attractive for internal development environments and private code repositories.
 
 Recently, a **vulnerability was discovered in Gogs versions <= 0.13.0**, specifically in its **built-in SSH server**. This flaw allows **argument injection** via specially crafted SSH connections.
@@ -20,3 +22,5 @@ The vulnerability, tracked as [CVE-2024-39930](https://github.com/advisories/GHS
 While the [SonarSource blog post](https://www.sonarsource.com/blog/securing-developer-tools-unpatched-code-vulnerabilities-in-gogs-1) and the [Vicarius write-up](https://www.vicarius.io/vsociety/posts/argument-injection-in-gogs-ssh-server-cve-2024-39930) provide excellent analysis and explanation of the root cause of this vulnerability, **no public proof-of-concept (PoC) exploit code had been released** at the time of this writing.
 
 As a security researcher and exploit developer, I decided to dive deeper into this vulnerability and **craft an exploit** to make testing and validation easier for both **penetration testers and defenders**.
+
+## Vulnerability Analysis
