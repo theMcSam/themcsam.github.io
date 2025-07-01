@@ -271,7 +271,7 @@ If everything works as expected, the exploit will run without errors, and the fi
 In the video below, I demonstrate a proof-of-concept exploit for the Gogs vulnerability (CVE-2024-39930):
 
 
-<iframe width="1043" height="572" src="https://www.youtube.com/embed/ylQUgvktiMM" title="CVE-2024-39930 PoC gogs RCE exploitation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="500" height="500" src="https://www.youtube.com/embed/ylQUgvktiMM" title="CVE-2024-39930 PoC gogs RCE exploitation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 For convenience, I’ve also created a fully automated exploit script that handles everything — from uploading SSH keys to creating a repository and executing the payload.
