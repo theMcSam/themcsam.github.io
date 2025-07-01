@@ -17,7 +17,7 @@ image:
 
 Recently, a **vulnerability was discovered in Gogs versions <= 0.13.0**, specifically in its **built-in SSH server**. This flaw allows **argument injection** via specially crafted SSH connections.
 
-The vulnerability, tracked as [CVE-2024-39930](https://github.com/advisories/GHSA-vm62-9jw3-c8w3), is particularly dangerous when the SSH server is enabled and exposed, as it can allow attackers to execute unintended commands by manipulating environment variables passed during SSH authentication.
+The vulnerability, tracked as [CVE-2024-39930](https://github.com/advisories/GHSA-vm62-9jw3-c8w3), is particularly dangerous when the SSH server is enabled and exposed, as it can allow attackers to execute unintended commands by manipulating environment variables passed after SSH authentication.
 
 While the [SonarSource blog post](https://www.sonarsource.com/blog/securing-developer-tools-unpatched-code-vulnerabilities-in-gogs-1) and the [Vicarius write-up](https://www.vicarius.io/vsociety/posts/argument-injection-in-gogs-ssh-server-cve-2024-39930) provide excellent analysis and explanation of the root cause of this vulnerability, **no public proof-of-concept (PoC) exploit code had been released** at the time of this writing.
 
