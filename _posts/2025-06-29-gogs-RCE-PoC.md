@@ -34,7 +34,7 @@ After a successful TCP connection and authentication, the Gogs SSH server begins
 
 It is important to note that while the exec request can start a process, it is typically restricted to Git-related commands within the Gogs environment. This means the exec request cannot be freely used to execute arbitrary system commands, which is an intentional security limitation.
 
-When reviewing the [official advisory](https://github.com/advisories/GHSA-vm62-9jw3-c8w3), we notice that the linked patch commit provides valuable insight into the fix. The relevant commit can be found here: [gogs/gogs#7868](https://github.com/gogs/gogs/pull/7868/commits/df245d776b6f9c0d4920c9baaa1a57413d220fd3), and it serves as a great starting point for analyzing the vulnerability.
+When reviewing the [official advisory](https://github.com/advisories/GHSA-vm62-9jw3-c8w3), i noticed that the linked patch commit provides valuable insight into the fix. The relevant commit can be found here: [gogs/gogs#7868](https://github.com/gogs/gogs/pull/7868/commits/df245d776b6f9c0d4920c9baaa1a57413d220fd3), and it serves as a great starting point for analyzing the vulnerability.
 
 In this patch, we can observe that within the `internal/ssh/ssh.go` file, a significant portion of the code responsible for handling the `env` SSH request was removed from the `switch` case statement. This removal indicates that the `env` command handling was likely deemed unnecessary or insecure in the context of how Gogs processes SSH requests.
 
@@ -124,7 +124,7 @@ Buckle up! In the next sections, we’ll walk through crafting a working exploit
 ### Setting up Gogs enviroment
 For readers who would like to replicate this vulnerability, I’ve created a quick automated script that sets up a vulnerable `Gogs` instance. This allows you to focus entirely on exploitation without getting bogged down in the setup process.
 
-You can access the script here: [Download gogs_install.sh](#)
+You can access the script here: [Download gogs_install.sh](https://github.com/theMcSam/CVE-2024-39930-PoC/blob/main/gogs_install.sh)
 
 #### 🛠️ Quick Setup Steps
 
