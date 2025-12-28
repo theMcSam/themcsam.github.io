@@ -96,3 +96,9 @@ int __fastcall main(int argc, const char **argv, const char **envp)
   return 0;
 }
 ```
+
+This gives us a much clearer picture of how the program works internally. The `v6` array acts as a command table that maps command strings to their corresponding handler functions.
+
+The program then enters an infinite loop where it repeatedly reads user input and dispatches execution based on the command entered. One line immediately stands out here. On **line 19**, the call to scanf uses the `%s` format specifier.
+
+Using `%s` without a length limit causes scanf to read an arbitrary amount of user controlled input until it encounters a null byte. Since the destination buffer `s1` is only `112 bytes` long, this results in a classic stack based buffer overflow.
