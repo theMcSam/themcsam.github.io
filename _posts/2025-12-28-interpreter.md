@@ -1,16 +1,16 @@
 ---
-title: Interpreter @ SNHT '25
+title: Interpreter @ SNHT CTF '25
 date: 2025-10-31 04:45:00 +0800
-categories: [CTF]
+categories: [CTF, SNHT CTF '25]
 tags: [writeups, binary exploitation, pwn]
 math: true
 mermaid: true
-media_subpath: /assets/posts/
+media_subpath: /assets/posts/2025-12-28-interpreter
 image:
   path: 
 ---
 
-## Interpreter - SNHT '25
+## Interpreter - SNHT CTF '25
 Difficulty: Easy
 
 Overview: *Interpreter* is a challenge created by a friend of mine, **0x1337 (aka blood pwn)**. If you are into pwn, you have probably come across his work. His blog is packed with really solid writeups, which you can check out [here](https://h4ckyou.github.io/).
