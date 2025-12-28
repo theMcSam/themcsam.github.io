@@ -7,7 +7,7 @@ math: true
 mermaid: true
 media_subpath: /assets/posts/2025-12-28-interpreter
 image:
-  path: 
+  path: preview.png
 ---
 
 ## Interpreter - SNHT CTF '25
