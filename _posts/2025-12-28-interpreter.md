@@ -197,7 +197,6 @@ gef> x 0x00007ffff79b3687 - 0x00007ffff7800000
 
 In this case the offset to the libc base is 0x1b3687.
 
-### Crafting a full exploit
 ### Crafting a Full Exploit
 
 Now that we have a libc leak, calculating the libc base address becomes straightforward. With the base address known, we can reliably build a ROP chain. Before doing that, however, we need to determine the exact offset to the saved return address so we know where our ROP chain should begin.
@@ -248,3 +247,5 @@ io.interactive()
 
 > Because the `DEBUG` command causes the program to break out of the infinite loop, we prepend our payload with it. This allows execution to continue past the loop and eventually return into our crafted ROP chain, resulting in code execution.
 {: .prompt-tip }
+
+
