@@ -100,13 +100,13 @@ This gives us a much clearer picture of how the program works internally. The `v
 
 The program then enters an infinite loop where it repeatedly reads user input and dispatches execution based on the command provided. One line immediately stands out here. On **line 19**, the call to `scanf` uses the `%s` format specifier.
 
-Using `%s` without a length limit causes `scanf` to read an arbitrary amount of user controlled input until it encounters a null byte. Since the destination buffer `s1` is only **112 bytes** long, this results in a classic stack based buffer overflow.
+Using `%s` without a length limit causes `scanf` to read an arbitrary amount of user controlled input until it encounters a new line, space or tab. Since the destination buffer `s1` is only **112 bytes** long, this results in a classic stack based buffer overflow.
 
 There is also another command we did not initially focus on during our first interaction with the program, the `DEBUG` command. This command allows us to break out of the infinite loop. The program first checks whether the input matches any of the allowed commands, and if it does, it uses the corresponding function pointer to invoke the appropriate handler.
 
 This logic, combined with the buffer overflow we identified earlier, is a perfect recipe for disaster. However, there is still a problem. If we want to gain a shell using a ROP chain, we first need to leak addresses from `libc`.
 
-To do that, we need to take another look at the program and figure out how we can force it to leak stack or libc addresses.
+To do that, we need to take another look at the program and figure out how we can force it to leak libc addresses.
 
 ### Leaking libc
 Let us take a closer look at the implementation of the `echo` command.
