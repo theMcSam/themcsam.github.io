@@ -92,7 +92,7 @@ There are two major security implications here:
 In other words, CyberPanel’s implementation assumes that any server participating in the backup process is inherently trusted.
 
 
-## How This Can Be Exploited to Gain RCE
+### How This Can Be Exploited to Gain RCE
 
 To exploit this behavior, an attacker can stand up a server they control and present it as the “remote CyberPanel” during the backup process. This server does not actually need to run CyberPanel; it only needs to respond in a way that satisfies the backup feature’s expectations and provide an SSH public key.
 
