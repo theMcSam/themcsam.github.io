@@ -105,7 +105,7 @@ Once the key exchange completes, the attacker can authenticate directly to the l
 
 ## Command Injection via Remote Backup Feature
 
-Before diving into this, we tried multiple ways to get a coammand injection vulnerability. There was a security feature that was implimented that filtered user input that flowed into OS commands making it safe from command injection. This secutrity middleware [secMiddleware.py](https://github.com/usmannasir/cyberpanel/blob/stable/CyberCP/secMiddleware.py) was applied to all endpoints to ensure full coverage. 
+Before diving into this, we tried multiple ways to get a command injection vulnerability. There was a security feature that was implimented that filtered user input that flowed into OS commands making it safe from command injection. This secutrity middleware [secMiddleware.py](https://github.com/usmannasir/cyberpanel/blob/stable/CyberCP/secMiddleware.py) was applied to all endpoints to ensure full coverage. 
 
 This security feature makes it more challenging to achieve a command injection so we had to think about other ways to get that to work. 
 
