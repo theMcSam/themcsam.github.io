@@ -1,5 +1,5 @@
 ---
-title: Multiple Vulnerabilties I Discoverd In CyberPanel
+title: Authenticated RCE and File Read Vulnerabilities Found in CyberPanel
 date: 2026-01-18 02:45:00 +0800
 categories: [Vulnerability Research, Bug Hunting]
 tags: [writeups, Command Injection, Arbitrary File Read]
