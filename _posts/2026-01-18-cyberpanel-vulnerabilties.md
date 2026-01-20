@@ -2,7 +2,7 @@
 title: Multiple Vulnerabilties I Discoverd In CyberPanel
 date: 2026-01-18 02:45:00 +0800
 categories: [Vulnerability Research, Bug Hunting]
-tags: [writeups, binary exploitation, pwn]
+tags: [writeups, Command Injection, Arbitrary File Read]
 math: true
 mermaid: true
 media_subpath: /assets/posts/2026-01-18-cyberpanel
