@@ -110,7 +110,7 @@ Before diving into this, we tried multiple ways to get a command injection vulne
 This security feature makes it more challenging to achieve a command injection so we had to think about other ways to get that to work. 
 
 ### Source of the command injection
-From the first vulneravbility we already know how the remote backup feature in CyberPanel works. 
+From the first vulnerability we already know how the remote backup feature in CyberPanel works. 
 
 The vulnerability resides in the `starRemoteTransfer` method of the `BackupManager` class within `cyberpanel/backup/backupManager.py` (lines 1253-1273), accessible via the `/backup/starRemoteTransfer` endpoint. 
 
