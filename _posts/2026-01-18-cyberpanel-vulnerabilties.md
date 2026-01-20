@@ -85,23 +85,14 @@ From the design of the backup workflow, we can observe that the SSH public key r
 
 There are two major security implications here:
 
-1. **Lack of Authenticity Verification** — There is no mechanism to confirm that the remote CyberPanel server being added is genuine. Any instance that can provide a password and an SSH public key is implicitly trusted.
+1. **Lack of Authenticity Verification** — There is no mechanism to confirm that the remote CyberPanel server being added is genuine. Any instance that can provide password verification and an SSH public key is implicitly trusted.
 
 2. **Unbounded Trust Model** — Even if authenticity checks were introduced, an attacker could still spin up a CyberPanel instance they fully control and supply it as the “remote” server. Because the trust relationship is established automatically, the attacker gains root-level access to the system via SSH.
 
 In other words, CyberPanel’s implementation assumes that any server participating in the backup process is inherently trusted.
 
 
-There are two major security implications here:
-
-1. **Lack of Authenticity Verification** — There is no mechanism to confirm that the remote CyberPanel server being added is genuine. Any instance that can provide password verification and an SSH public key is implicitly trusted.
-
-2. **Unbounded Trust Model** — Even if authenticity checks were introduced, an attacker could still spin up a CyberPanel instance they fully control and supply it as the “remote” server. Because the trust relationship is established automatically, the attacker gains root-level access to the system via SSH.
-
-In other words, CyberPanel’s implementation assumes that any server participating in the backup process is inherently trusted. 
-
-## How this can be exploited to gain RCE
-An attacked can spin up a regular HTTP server (doesn't even have to be a CyberPanel ## How This Can Be Exploited to Gain RCE
+## How This Can Be Exploited to Gain RCE
 
 To exploit this behavior, an attacker can stand up a server they control and present it as the “remote CyberPanel” during the backup process. This server does not actually need to run CyberPanel; it only needs to respond in a way that satisfies the backup feature’s expectations and provide an SSH public key.
 
