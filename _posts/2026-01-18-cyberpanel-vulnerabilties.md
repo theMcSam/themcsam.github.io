@@ -17,17 +17,17 @@ image:
 
 During the Christmas break, my friend [@whiteov3rflow](https://github.com/whiteov3rflow) and I decided to undertake a small research project exploring the security posture of cloud hosting panels. We selected **CyberPanel** as our starting point and spent the holidays examining its features, behavior, and underlying code paths.
 
-The research turned out to be quite productive. Between the two of us, we uncovered several interesting issues. In this post, I’ll be focusing specifically on the vulnerabilities **I discovered** during that exploration — three in particular, two of which lead to authenticated Remote Code Execution and arbitrary file read:
+The research turned out to be quite productive. Between the two of us, we uncovered several interesting issues. In this post, I will be focusing specifically on the vulnerabilities I discovered during that exploration. Three issues stood out, two of which resulted in authenticated Remote Code Execution and arbitrary file read:
 
-1. **Authenticated Remote Code Execution via Remote Backup Feature** 
-2. **Command Injection via Remote Backup Feature** 
+1. **Authenticated Remote Code Execution via Remote Backup Feature**  
+2. **Command Injection via Remote Backup Feature**  
 3. **Arbitrary File Read via Symlink Attack**
 
-I’ll walk through each vulnerability, how it was identified, the technical root cause, its practical impact, and thoughts on remediation. I’ll also discuss how I approached developing proof-of-concept exploits for these issues to validate exploitation.
+I will walk through each vulnerability, how it was identified, the technical root cause and practical impact.
 
-Later in the post, I’ll highlight the work done by [@whiteov3rflow](https://github.com/whiteov3rflow) and link to his write-up once it’s published.
+My friend [@whiteov3rflow](https://github.com/whiteov3rflow) also has a blog on his discoveries. His write up can be found here:  <https://itsrez.re/post/cyberpanel-rce>
 
-Let’s get started!!
+Let us get started!!
 
 ---
 
