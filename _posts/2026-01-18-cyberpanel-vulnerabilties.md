@@ -159,9 +159,9 @@ To exploit this vulnerability, an attacker can establish a malicious backup serv
 
 ### Proof of concept
 
-<img width="1026" height="526" alt="image" src="https://github.com/user-attachments/assets/cc319a54-70de-4cdf-9e90-9f905a4b4a0f" />
+![poc1](poc1.png)
 
-<img width="1849" height="692" alt="image" src="https://github.com/user-attachments/assets/07096165-87a2-4acc-b9e4-e476e6ac6019" />
+![poc2](poc2.png)
 
 You can find the PoC scripts here: 
 
