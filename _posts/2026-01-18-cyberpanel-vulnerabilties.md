@@ -175,18 +175,18 @@ Specifically, when a user uploads a ZIP archive containing symbolic links, the a
 
 The image below shows CyberPanel accepting a ZIP archive that contains symbolic links:
 
-<img width="1663" height="570" alt="image" src="https://github.com/user-attachments/assets/cbfba79f-d84a-414d-a0e0-639fa7016c71" />
+![poc3](poc3.png)
 
 Upon extraction, the contents of the archive — including symbolic links — are written to disk. Because the symlink validation logic does not prevent the extraction step itself, the links remain intact and accessible through the web interface.
 
 As demonstrated in the screenshot below, by intercepting the request using an HTTP proxy, the symlinked file can be accessed directly, successfully returning the contents of an arbitrary system file:
 
-<img width="1021" height="607" alt="image" src="https://github.com/user-attachments/assets/971c16ca-e839-4d46-b64a-d1d4decc9f9b" />
+![poc4](poc4.png)
 
 ### Proof of Concept
 
 The following image shows a simple proof-of-concept where a symbolic link inside a ZIP archive points to a sensitive file on the system:
 
-<img width="1234" height="743" alt="image" src="https://github.com/user-attachments/assets/183ab387-cbad-4de9-8c75-c2efb7263589" />
+![poc5](poc5.png)
 
 The exploit script used to demonstrate the vulnerability can be found here:
