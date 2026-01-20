@@ -177,7 +177,7 @@ The image below shows CyberPanel accepting a ZIP archive that contains symbolic 
 
 ![poc3](poc3.png)
 
-Upon extraction, the contents of the archive — including symbolic links — are written to disk. Because the symlink validation logic does not prevent the extraction step itself, the links remain intact and accessible through the web interface.
+Upon extraction, the contents of the archive including symbolic links are written to disk. Because the symlink validation logic does not prevent the extraction step itself, the links remain intact and accessible through the web interface.
 
 As demonstrated in the screenshot below, by intercepting the request using an HTTP proxy, the symlinked file can be accessed directly, successfully returning the contents of an arbitrary system file:
 
