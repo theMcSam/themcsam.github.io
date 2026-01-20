@@ -7,7 +7,7 @@ math: true
 mermaid: true
 media_subpath: /assets/posts/2026-01-18-cyberpanel
 image:
-  path: preview.png
+  path: preview.jpeg
 ---
 
 ## Technical breakdown of vulnerabilties i discovered in CyberPanel
