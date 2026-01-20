@@ -118,8 +118,84 @@ Before diving into this, we tried multiple ways to get a coammand injection vuln
 
 This security feature makes it more challenging to achieve a command injection so we had to think about other ways to get that to work. 
 
-### How the remote backup functionality of CyberPanel works
-While testing the application we came across a remote backup functionality that CyberPanel provides. The idea behind this feature is to be able to make a backup of a remote CyberPanel server once we know it's password. The process for the remote backup is as follows: 
+### Source of the command injection
+From the first vulneravbility we already know how the remote backup feature in CyberPanel works. 
+
+The vulnerability resides in the `starRemoteTransfer` method of the `BackupManager` class within `cyberpanel/backup/backupManager.py` (lines 1253-1273), accessible via the `/backup/starRemoteTransfer` endpoint. 
+
+```python
+finalData = json.dumps({'username': "admin", "password": password, "ipAddress": ownIP,
+                      "accountsToTransfer": accountsToTransfer, 'port': port})
+
+url = "https://" + ipAddress + ":8090/api/remoteTransfer"
+
+r = requests.post(url, data=finalData, verify=False)
+
+if os.path.exists('/usr/local/CyberCP/debug'):
+  message = 'Remote transfer initiation status: %s' % (r.text)
+  logging.CyberCPLogFileWriter.writeToFile(message)
+
+data = json.loads(r.text)
+
+if data['transferStatus'] == 1:
+
+  ## Create local backup dir
+
+  localBackupDir = os.path.join("/home", "backup")
+
+  if not os.path.exists(localBackupDir):
+      command = "sudo mkdir " + localBackupDir
+      ProcessUtilities.executioner(command)
+
+  ## create local directory that will host backups
+
+  localStoragePath = "/home/backup/transfer-" + str(data['dir'])
+
+  ## making local storage directory for backups
+
+  command = "sudo mkdir " + localStoragePath
+  ProcessUtilities.executioner(command)
+
+  command = 'chmod 600 %s' % (localStoragePath)
+  ProcessUtilities.executioner(command)
+```
+
+When CyberPanel initiates a remote backup transfer, it connects to the remote server via SSH and begins replicating the directory locally. The application receives a directory name from the remote server through the `data['dir']` parameter and uses this input to construct system commands for creating the directory. Because this input is not sanitized or validated before being passed to the operating system, an attacker controlling the remote server can inject arbitrary commands through crafted directory names.
 
 
+### How this vulnerability can be leveraged
+To exploit this vulnerability, an attacker can establish a malicious backup server that supplies crafted directory names containing command injection payloads. CyberPanel's security middleware `(cyberpanel/CyberCP/secMiddleware.py)` only validates inbound data submitted to the server. The remote backup feature inverts this data flow by making outbound HTTP requests to fetch directory names from the remote server's `/api/remoteTransfer` endpoint. Since the security middleware only processes incoming requests, this externally-sourced data bypasses validation entirely and is used directly in command construction.
 
+### Proof of concept
+
+<img width="1026" height="526" alt="image" src="https://github.com/user-attachments/assets/cc319a54-70de-4cdf-9e90-9f905a4b4a0f" />
+
+<img width="1849" height="692" alt="image" src="https://github.com/user-attachments/assets/07096165-87a2-4acc-b9e4-e476e6ac6019" />
+
+You can find the PoC scripts here: 
+
+---
+
+## Arbitrary File Read via Symlink Attack
+
+During testing of the file manager component, we identified a vulnerability that allows authenticated users to read arbitrary files on the underlying system by abusing symbolic links. CyberPanel attempts to prevent this through symlink detection logic, but these checks are performed **after** file operations have already taken place. As a result, the validation can be bypassed in certain scenarios.
+
+Specifically, when a user uploads a ZIP archive containing symbolic links, the application accepts and extracts the archive without sanitizing or validating its contents. This allows symbolic links to point to arbitrary filesystem paths outside the user’s home directory.
+
+The image below shows CyberPanel accepting a ZIP archive that contains symbolic links:
+
+<img width="1663" height="570" alt="image" src="https://github.com/user-attachments/assets/cbfba79f-d84a-414d-a0e0-639fa7016c71" />
+
+Upon extraction, the contents of the archive — including symbolic links — are written to disk. Because the symlink validation logic does not prevent the extraction step itself, the links remain intact and accessible through the web interface.
+
+As demonstrated in the screenshot below, by intercepting the request using an HTTP proxy, the symlinked file can be accessed directly, successfully returning the contents of an arbitrary system file:
+
+<img width="1021" height="607" alt="image" src="https://github.com/user-attachments/assets/971c16ca-e839-4d46-b64a-d1d4decc9f9b" />
+
+### Proof of Concept
+
+The following image shows a simple proof-of-concept where a symbolic link inside a ZIP archive points to a sensitive file on the system:
+
+<img width="1234" height="743" alt="image" src="https://github.com/user-attachments/assets/183ab387-cbad-4de9-8c75-c2efb7263589" />
+
+The exploit script used to demonstrate the vulnerability can be found here:
