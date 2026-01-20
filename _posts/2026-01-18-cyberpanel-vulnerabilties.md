@@ -126,7 +126,7 @@ if os.path.exists('/usr/local/CyberCP/debug'):
   message = 'Remote transfer initiation status: %s' % (r.text)
   logging.CyberCPLogFileWriter.writeToFile(message)
 
-data = json.loads(r.text)
+data = json.loads(r.text) # <- RESPONSE FROM REMOTE SERVER
 
 if data['transferStatus'] == 1:
 
@@ -140,7 +140,7 @@ if data['transferStatus'] == 1:
 
   ## create local directory that will host backups
 
-  localStoragePath = "/home/backup/transfer-" + str(data['dir'])
+  localStoragePath = "/home/backup/transfer-" + str(data['dir']) # <- ATTACKER CONTROLLED
 
   ## making local storage directory for backups
 
