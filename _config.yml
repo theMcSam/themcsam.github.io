@@ -16,7 +16,7 @@ timezone:
 
 title: McSam's blog # the main title
 
-tagline: Computerphile | bytebender | Researcher # it will display as the subtitle
+tagline: computerphile # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A friendly blog platform where i'll discuss about
@@ -36,7 +36,7 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Ardayfio Samuel Nii Aryee
+  name: McSam
   email: ardisam9876@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
