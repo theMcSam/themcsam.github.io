@@ -32,6 +32,7 @@ Let us get started!!
 ---
 
 ## CVE-2026-29811: Authenticated Remote Code Execution via Remote Backup Feature
+**Affected Version:** CyberPanel 2.4.3 
 
 CyberPanel includes a **remote backup** feature that allows a user to back up files from a remote CyberPanel server into the current instance, provided they have the IP address and password of the target server. 
 
@@ -104,6 +105,7 @@ Once the key exchange completes, the attacker can authenticate directly to the l
 ---
 
 ## CVE-2026-29812: Command Injection via Remote Backup Feature
+**Affected Version:** CyberPanel 2.4.3 
 
 Before diving into this, we tried multiple ways to get a command injection vulnerability. There was a security feature that was implimented that filtered user input that flowed into OS commands making it safe from command injection. This secutrity middleware [secMiddleware.py](https://github.com/usmannasir/cyberpanel/blob/stable/CyberCP/secMiddleware.py) was applied to all endpoints to ensure full coverage. 
 
@@ -168,6 +170,7 @@ You can find the PoC scripts here:
 ---
 
 ## CVE-2026-29810: Arbitrary File Read via Symlink Attack
+**Affected Version:** CyberPanel 2.4.3 
 
 During testing of the file manager component, we identified a vulnerability that allows authenticated users to read arbitrary files on the underlying system by abusing symbolic links. CyberPanel attempts to prevent this through symlink detection logic, but these checks are performed **after** file operations have already taken place. As a result, the validation can be bypassed in certain scenarios.
 
